@@ -1,4 +1,5 @@
 import notes from "../apis/notes";
+import history from "../history";
 
 export const signIn = (userId) => {
   return {
@@ -18,6 +19,7 @@ export const createNote = (formValues) => async (dispatch, getState) => {
   const response = await notes.post("/notes", { ...formValues, userId });
 
   dispatch({ type: "CREATE_NOTE", payload: response.data });
+  history.push("/notes/list");
 };
 
 export const fetchNotes = (userId) => async (dispatch) => {
@@ -33,13 +35,15 @@ export const fetchNote = (id) => async (dispatch) => {
 };
 
 export const editNote = (id, formValues) => async (dispatch) => {
-  const response = await notes.put(`/notes/${id}`, formValues);
+  const response = await notes.patch(`/notes/${id}`, formValues);
 
   dispatch({ type: "EDIT_NOTE", payload: response.data });
+  history.push("/notes/list");
 };
 
 export const deleteNote = (id) => async (dispatch) => {
   await notes.delete(`/notes/${id}`);
 
   dispatch({ type: "DELETE_NOTE", payload: id });
+  history.push("/notes/list");
 };
